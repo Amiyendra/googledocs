@@ -1,0 +1,16 @@
+#editor {
+  display:flex;
+ justify-content: center;
+ position: sticky;
+            width: 100%;
+            min-height: 100vh;
+            border: 1px solid #ccc;
+        }
+        .ql-toolbar {
+            display: flex;
+            justify-content: center;
+            position: sticky;
+            top: 0;
+            background-color: white; /* Adjust the background color as needed */
+            z-index: 1;
+        }

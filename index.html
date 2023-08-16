@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Google docs</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<link href="https://cdn.quilljs.com/1.2.6/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.quilljs.com/1.2.6/quill.min.js"></script>
+
+<div id="editor"></div>
+
+<script>
+var toolbarOptions = [
+  ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+  ['blockquote', 'code-block'],
+
+  [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+  [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+  [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+  [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+  [{ 'direction': 'rtl' }],                         // text direction
+
+  [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+  [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+  [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+  [{ 'font': [] }],
+  [{ 'align': [] }],
+
+  ['clean']                                         // remove formatting button
+];
+// Initialize Quill
+var quill = new Quill('#editor', {
+    theme: 'snow',
+    modules:{
+      toolbar:toolbarOptions
+    } // 'snow' is a built-in theme that resembles a simple word processor
+});
+
+// Get the HTML content of the editor
+var content = quill.root.innerHTML;
+
+// // Set the HTML content of the editor
+quill.root.innerHTML = '<p>Hello, Quill!</p>';
+
+</script>
+
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+   
+
+    // Initialize Socket.io connection
+    var socket = io.connect('http://localhost:3000');
+
+    // Listen for changes from other clients
+    socket.on('editor-changes', (delta) => {
+        quill.updateContents(delta);
+    });
+
+    // Send changes to the server when content changes
+    quill.on('text-change', (delta, oldDelta, source) => {
+        if (source === 'user') {
+            socket.emit('editor-changes', delta);
+        }
+    });
+</script>
+
+</body>
+</html>
